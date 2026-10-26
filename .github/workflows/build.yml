@@ -28,7 +28,19 @@ jobs:
           echo "VERSION_NAME=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_ENV"
 
       - name: Tests unitaires et APK signé
-        run: ./gradlew --no-daemon testDebugUnitTest assembleRelease
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --console=plain testDebugUnitTest assembleRelease 2>&1 | tee build.log
+
+      - name: Diagnostic si échec
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tail -c 55000 build.log > diag.txt
+          gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/comments" \
+            -f body="$(printf '```\n%s\n```' "$(cat diag.txt)")" >/dev/null
+          echo "Diagnostic publié en commentaire de commit."
 
       - name: Nommer l'APK
         run: cp app/build/outputs/apk/release/app-release.apk "bruce-companion-${VERSION_NAME}.apk"
