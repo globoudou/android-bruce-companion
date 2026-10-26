@@ -4,7 +4,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <!-- Nécessaire pour que la boîte de dialogue de connexion Wi-Fi par l'app
+    <!-- La WebUI de Bruce est en HTTP simple : usesCleartextTraffic l'autorise (Android 9+ le bloque sinon).
+         Nécessaire pour que la boîte de dialogue de connexion Wi-Fi par l'app
          (WifiNetworkSpecifier) propose le point d'accès du Bruce. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -14,6 +15,7 @@
         android:label="Bruce Companion"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.BruceCompanion">
         <activity
             android:name=".MainActivity"
